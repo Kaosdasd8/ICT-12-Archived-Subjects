@@ -1,0 +1,61 @@
+<?php
+
+@include 'config.php';
+
+session_start();
+
+if(isset($_POST['save'])){
+
+  $username = mysqli_real_escape_string($conn, $_POST['name']);
+  $pass = md5($_POST['password']);
+
+  $select = " SELECT * FROM user_form WHERE username='$username' && password='$pass";
+
+  $result = mysqli_query($conn, $select);
+
+  if(mysqli_num_rows($result) > 0){
+    $error[] = 'user already exist';
+  }else{
+    $insert = "INSERT INTO user_form(username, password) VALUES ('$username', '$pass')";
+    mysqli_query($conn, $insert);
+    header('location:login.html');
+  }
+}
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Sign up</title>
+        <link rel="stylesheet" type="text/css" href="sign up.css">
+    </head>
+    <body>
+<div class="signup-form">
+    <header>
+      <h1>Welcome to ICT-12 Archived Subjects!</h1>
+      <?php
+       if(isset($error)){
+        foreach($error as $error){
+          echo '<span class="error-msg">'.$error.'</span>';
+        }
+       
+      }
+    </header>
+    <form action="" method="post">
+      <h2>Sign up</h2>
+      <div class="input-container">
+        <input type="text" name="name" required>
+        <label for="username">Username</label>
+      </div>
+      <div class="input-container">
+        <input type="password" name="password" required>
+        <label for="id">Student I.D</label>
+      </div>
+      <button type="submit" name="save">Sign up</button>
+      <p>Already have an account? <a href="login.html">Log in</a></p>
+    </form>
+  </div>
+    </body>
+</html>
